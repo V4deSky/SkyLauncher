@@ -15,9 +15,13 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" >
+<<<<<<< HEAD
+            <Button Content="Выбрать модель" Name="BtnFile" Click="InputComboBox" FontWeight="SemiBold"/>
+=======
             <ComboBox Width="150" HorizontalAlignment="Left" Name="ComboBoxAI" SelectionChanged="InputComboBox">
                 <ComboBoxItem Content="qwen3:4b"/>
             </ComboBox>
+>>>>>>> refs/remotes/origin/main
         </StackPanel>
         <Border Grid.Row="1">
             <ScrollViewer>
