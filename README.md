@@ -1,7 +1,8 @@
 # SkyLauncher
 
 # En🇬🇧
-Run your `.gguf` files with AI using Sky Launcher, LLamaSharp was used to implement Sky Launcher, as well as the C# XAML stack
+Run your `.gguf` files with AI using Sky Launcher, LLamaSharp was used to implement Sky Launcher, as well as the C# XAML stack.
+I recommend using the Phi-3.5 model, as Qwen may produce errors on some models.
 
 <img src="https://i.ibb.co/bjkvRWry/Screenshot-2026-11-16-183851.png" alt="Screenshot-2026-11-16-183851" border="0">
 
@@ -14,7 +15,8 @@ Instructions for launching a model in Sky Launcher:
 4. Enjoy the work of the AI.
 
 # Ru🇷🇺
-Запускайте свои `.gguf` файлы с ИИ с помощью Sky Launcher, для реализации Sky Launcher использовался LLamaSharp, так же стек C# XAML
+Запускайте свои `.gguf` файлы с ИИ с помощью Sky Launcher, для реализации Sky Launcher использовался LLamaSharp, так же стек C# XAML.
+Рекомендую к использованию модель Phi-3.5, так как, на некоторых моделей Qwen может выдавать ошибки
 
 <img src="https://i.ibb.co/bjkvRWry/Screenshot-2026-11-16-183851.png" alt="Screenshot-2026-11-16-183851" border="0">
 
