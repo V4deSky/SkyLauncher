@@ -1,11 +1,10 @@
-<<<<<<< HEAD
-﻿using LLama;
+using LLama;
 using LLama.Abstractions;
-using LLama.Native;
 using LLama.Common;
-=======
+using LLama.Native;
+using Microsoft.Win32;
 ﻿using OllamaSharp;
->>>>>>> refs/remotes/origin/main
+using OllamaSharp.Models;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,41 +12,31 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-<<<<<<< HEAD
-using Microsoft.Win32;
-=======
->>>>>>> refs/remotes/origin/main
 
 namespace SkyLauncher
 {
     public partial class MainWindow : Window
     {
-<<<<<<< HEAD
         private LLamaWeights _model;
         private LLamaContext _context;
-        private ChatSession _chatSession;
+        private ChatHistory _chatHistory;
         private OpenFileDialog openFileDialog;
+        private ChatSession _session;
         public string _currentmodel;
         public bool _isGeneration = false;
         private string _filename;
         private string modelPath;
+        private InteractiveExecutor executor;
+        private bool AISelected;
         public MainWindow()
         {
-            modelPath = @"G:\SkyLauncher\SkyLauncher\SkyLauncher\models\Qwen3.5-4B-Q4_K_M.gguf";
+            modelPath = _filename;
             InitializeComponent();
-            var parameters = new ModelParams(modelPath)
-            {
-                ContextSize = 2048,
-                GpuLayerCount = 3
-            };
-            _model = LLamaWeights.LoadFromFile(parameters);
-            _context = _model.CreateContext(parameters);
-            var executor = new InteractiveExecutor(_context);
-            _chatSession = new ChatSession(executor);
         }
 
-        private async void InputComboBox(object sender, RoutedEventArgs e)
+        private void InputComboBox(object sender, RoutedEventArgs e)
         {
+            AISelected = true;
             openFileDialog = new OpenFileDialog();
             openFileDialog.DefaultExt = ".gguf";
             Nullable<bool> result = openFileDialog.ShowDialog();
@@ -56,37 +45,26 @@ namespace SkyLauncher
                 _filename = openFileDialog.FileName;
             }
             modelPath = _filename;
-            _model?.Dispose();
-=======
-        public Chat _chat;
-        private OllamaApiClient _ollama;
-        public string _currentmodel;
-        public bool _isGeneration = false;
-        public MainWindow()
-        {
-            InitializeComponent();
-            var uri = new Uri("http://localhost:11434");
-            _ollama = new OllamaApiClient(uri);
-            _currentmodel = "qwen3:4b";
-            _ollama.SelectedModel = _currentmodel;
-            _chat = new Chat(_ollama);
-        }
-
-        private async void InputComboBox(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedItem = e.AddedItems[0] as ComboBoxItem;
-            if (selectedItem != null)
+            var parameters = new ModelParams(modelPath)
             {
-                _currentmodel = selectedItem.Content.ToString();
-            }
+                ContextSize = 4096,
+                GpuLayerCount = 3
+            };
+            _model = LLamaWeights.LoadFromFile(parameters);
+            _context = _model.CreateContext(parameters);
+            executor = new InteractiveExecutor(_context);
+            _chatHistory = new ChatHistory();
+            _chatHistory.AddMessage(AuthorRole.System, "where the User interacts with an Assistant named Bob. Bob is helpful, kind, honest, good at writing, and never fails to answer the User's requests immediately and with precision.");
+            _chatHistory.AddMessage(AuthorRole.User, "Hello, Bob.");
+            _chatHistory.AddMessage(AuthorRole.Assistant, "Hello. How may I help you today?");
 
->>>>>>> refs/remotes/origin/main
+            _session = new(executor, _chatHistory);
         }
 
         private async void SendButton_Сlick(object sender, RoutedEventArgs e)
         {
-            
-            if (!_isGeneration)
+
+            if (!_isGeneration && AISelected)
             {
                 await SendChat();
             }
@@ -94,7 +72,7 @@ namespace SkyLauncher
 
         private async void InputTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (!_isGeneration && e.Key == Key.Enter)
+            if (!_isGeneration && e.Key == Key.Enter && AISelected)
             {
                 await SendChat();
             }
@@ -102,31 +80,19 @@ namespace SkyLauncher
         private async Task SendChat()
         {
             string text = InputTextBox.Text;
-<<<<<<< HEAD
             TextPanel.Text += text + Environment.NewLine;
             var text123 = TextPanel.Text;
             InputTextBox.Clear();
             InferenceParams inferenceParams = new InferenceParams()
             {
-                MaxTokens = 32000,
-                AntiPrompts = new List<string> { "User:" }
+                MaxTokens = 2048,
+                AntiPrompts = new List<string> {"User:", "user:","<|end|>","<|im_end|>","<|user|>"}
             };
-            await foreach (var token in _chatSession.ChatAsync(new ChatHistory.Message(AuthorRole.User, text), inferenceParams))
+            await foreach (var token in _session.ChatAsync(new ChatHistory.Message(AuthorRole.User, text), inferenceParams))
             {
                 TextPanel.Text += token;
-=======
-            TextPanel.Text += "You: ";
-            TextPanel.Text += text + Environment.NewLine;
-            var text123 = TextPanel.Text;
-            InputTextBox.Clear();
-            TextPanel.Text += "AI: ";
-            await foreach (var answerToken in _chat.SendAsync(text))
-            {
-                TextPanel.Text += answerToken;
->>>>>>> refs/remotes/origin/main
             }
-            TextPanel.Text += Environment.NewLine;
         }
-    }
 
+    }
 }
